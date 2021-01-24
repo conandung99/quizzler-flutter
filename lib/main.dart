@@ -1,7 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:quizzler/question.dart';
+import 'package:quizzler/quiz_brain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 void main() => runApp(Quizzler());
 
@@ -30,39 +30,31 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
 
-  // List<String> questions = ['You can lead a cow down stairs but not up stairs.',
-  //   'Approximately one quarter of human bones are in the feet.',
-  //   'A slug\'s blood is green.',
-  // ];
-  // List<bool> answers = [false, true, true];
-
-  // Question q1 = Question(q: 'You can lead a cow down stairs but not up stairs.', a: false);
-
-  List<Question> questions = [
-    Question(q: 'You can lead a cow down stairs but not up stairs.', a: false),
-    Question(q: 'Approximately one quarter of human bones are in the feet.', a: true),
-    Question(q: 'A slug\'s blood is green.', a: true),
-  ];
-
   int questionNum = 0;
 
   void checkAnswer(bool ans) {
     setState(() {
-      if(questions[questionNum].answer == ans) {
-        scoreKeeper.add(Icon(Icons.check, color: Colors.green,));
+      if (quizBrain.getQuestionAnswer(questionNum) == ans) {
+        scoreKeeper.add(Icon(
+          Icons.check,
+          color: Colors.green,
+        ));
       } else {
-        scoreKeeper.add(Icon(Icons.close, color: Colors.red,));
+        scoreKeeper.add(Icon(
+          Icons.close,
+          color: Colors.red,
+        ));
       }
     });
   }
 
   void changeQuestion() {
-    int length = questions.length;
-    if(questionNum < length - 1) {
-      setState(() {
-        questionNum++;
-      });
-    }
+    // int length = questions.length;
+    // if (questionNum < length - 1) {
+    setState(() {
+      questionNum++;
+    });
+    // }
   }
 
   @override
@@ -78,7 +70,7 @@ class _QuizPageState extends State<QuizPage> {
             child: Center(
               child: Text(
                 // 'This is where the question text will go.',
-                questions[questionNum].questionText,
+                quizBrain.getQuestionText(questionNum),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -105,7 +97,6 @@ class _QuizPageState extends State<QuizPage> {
                 print('The user picked true.');
                 checkAnswer(true);
                 changeQuestion();
-
               },
             ),
           ),
@@ -126,14 +117,14 @@ class _QuizPageState extends State<QuizPage> {
                 print('The user picked false.');
                 checkAnswer(false);
                 changeQuestion();
-
               },
             ),
           ),
         ),
         // Add a Row here as your score keeper
-        Row(children: scoreKeeper,)
-
+        Row(
+          children: scoreKeeper,
+        )
       ],
     );
   }
