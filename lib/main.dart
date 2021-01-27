@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizzler/quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 QuizBrain quizBrain = QuizBrain();
 
@@ -46,6 +47,37 @@ class _QuizPageState extends State<QuizPage> {
     });
   }
 
+  void showAlert() {
+    Alert(
+            context: context,
+            style: AlertStyle(
+              alertAlignment: Alignment.center,
+              isCloseButton: false,
+            ),
+            type: AlertType.warning,
+            title: "You reached the end",
+            desc: "Click ok below, this will led you to the beginning",
+            buttons: [
+              DialogButton(
+                child: Text(
+                  "OK",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                onPressed: () {
+                  setState(() {
+                    quizBrain.reset();
+                    scoreKeeper.clear();
+                  });
+                  Navigator.pop(context);
+                },
+                width: 120,
+              )
+            ],
+            onWillPopActive: true,
+            closeIcon: null)
+        .show();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -85,7 +117,7 @@ class _QuizPageState extends State<QuizPage> {
               onPressed: () {
                 print('The user picked true.');
                 checkAnswer(true);
-                quizBrain.changeQuestion();
+                if (quizBrain.changeQuestion()) showAlert();
               },
             ),
           ),
@@ -105,7 +137,7 @@ class _QuizPageState extends State<QuizPage> {
               onPressed: () {
                 print('The user picked false.');
                 checkAnswer(false);
-                quizBrain.changeQuestion();
+                if (quizBrain.changeQuestion()) showAlert();
               },
             ),
           ),

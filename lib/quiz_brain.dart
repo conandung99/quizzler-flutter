@@ -34,10 +34,12 @@ class QuizBrain {
         true),
   ];
 
-  void changeQuestion() {
+  bool changeQuestion() {
     if (_questionNum < _questionsList.length - 1) {
       _questionNum++;
-    }
+      return false;
+    } else
+      return true;
   }
 
   String getQuestionText() {
@@ -46,5 +48,9 @@ class QuizBrain {
 
   bool getQuestionAnswer() {
     return _questionsList[_questionNum].questionAnswer;
+  }
+
+  void reset() {
+    _questionNum = 0;
   }
 }
